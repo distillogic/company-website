@@ -1,0 +1,27 @@
+{
+  "name": "distillogic-website-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Backend API for DISTILLOGIC website project enquiries.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "check": "node --check src/server.js && node --check src/app.js && node --check src/config.js && node --check src/routes/project-enquiries.js && node --check src/services/enquiry-destination.js && node --check src/services/submission-failure-email.js",
+    "test": "node --test",
+    "check:references": "node scripts/check-static-references.mjs"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
+    "multer": "^2.0.0"
+  },
+  "devDependencies": {
+    "supertest": "^7.1.0"
+  }
+}
