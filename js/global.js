@@ -248,7 +248,7 @@ projectForm?.addEventListener('submit',async event=>{
   payload.set('sourcePage',window.location.pathname);
 
   try{
-    const response=await fetch('/api/project-enquiries',{
+    const response=await fetch('/crm/api/project-enquiries.php',{
       method:'POST',
       headers:{Accept:'application/json'},
       body:payload
