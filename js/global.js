@@ -83,6 +83,7 @@ const projectEnquiryMarkup=`
               <label><span>Name</span><input type="text" name="name" autocomplete="name" required></label>
               <label><span>Company</span><input type="text" name="company" autocomplete="organization" required></label>
               <label><span>Business Email</span><input type="email" name="email" autocomplete="email" required></label>
+              <label><span>Confirm Business Email</span><input type="email" name="emailConfirm" autocomplete="off" required></label>
               <label><span>Phone</span><input type="tel" name="phone" autocomplete="tel" maxlength="30"></label>
               <label><span>Country</span><input type="text" name="country" autocomplete="country-name" required></label>
               <label><span>What are you looking for?</span><select name="service" required><option value="">Select an option</option><option value="full-project-delivery">Full Project Delivery</option><option value="work-package-delivery">Work Package Delivery</option><option value="dedicated-engineering-team">Dedicated Engineering Team</option><option value="staff-augmentation">Staff Augmentation</option><option value="application-development">Application Development</option><option value="systems-integration">Systems Integration</option><option value="application-modernisation">Application Modernisation</option><option value="cloud-devops">Cloud / DevOps</option><option value="data-ai">Data &amp; AI</option><option value="quality-engineering">Quality Engineering</option><option value="application-management">Application Management</option><option value="other">Other</option></select></label>
@@ -119,7 +120,7 @@ const projectEnquiryMarkup=`
 
           <section class="project-form-section">
             <div class="project-form-section-heading"><span>07</span><div><h3>Supporting Documents</h3><p>Optional — RFP, scope, technical requirements, architecture, specifications or project brief.</p></div></div>
-            <label class="project-file-field"><input type="file" name="documents" accept=".pdf,.doc,.docx,.xls,.xlsx" multiple data-project-files><span class="project-file-icon" aria-hidden="true">+</span><span><strong>Upload supporting documents</strong><small>PDF, DOCX or XLSX</small><small data-project-file-names>No files selected</small></span></label>
+            <label class="project-file-field" for="project-supporting-documents"><span class="project-file-icon" aria-hidden="true">+</span><span><strong>Upload supporting documents</strong><small>PDF, Office, CSV, TXT, JPG or PNG · up to 8 MB each · maximum 5 files</small><input id="project-supporting-documents" type="file" name="documents[]" accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.jpg,.jpeg,.png" multiple aria-describedby="project-file-selection" data-project-files><small class="project-file-names" id="project-file-selection" data-project-file-names>No files selected</small></span></label>
           </section>
 
           <section class="project-form-section project-nda-section">
@@ -157,8 +158,11 @@ const ndaValue=document.querySelector('[data-nda-value]');
 const projectFormStatus=document.querySelector('[data-project-form-status]');
 const projectConsent=projectForm?.querySelector('input[name="privacyConsent"]');
 const projectSubmitButton=projectForm?.querySelector('button[type="submit"]');
+const projectEmail=projectForm?.querySelector('input[name="email"]');
+const projectEmailConfirm=projectForm?.querySelector('input[name="emailConfirm"]');
 let projectScrollPosition=0;
 let projectLastFocus=null;
+let projectFileScrollPosition=0;
 
 const openProjectModal=()=>{
   if(!projectModal)return;
@@ -211,9 +215,30 @@ projectModal?.addEventListener('keydown',event=>{
   }
 });
 
+projectFileInput?.addEventListener('click',()=>{
+  projectFileScrollPosition=projectModalBody?.scrollTop||0;
+});
+
 projectFileInput?.addEventListener('change',()=>{
   const files=[...projectFileInput.files];
-  projectFileNames.textContent=files.length?files.map(file=>file.name).join(', '):'No files selected';
+  const tooMany=files.length>5;
+  const tooLarge=files.some(file=>file.size>8*1024*1024);
+  const totalTooLarge=files.reduce((sum,file)=>sum+file.size,0)>20*1024*1024;
+  if(tooMany||tooLarge||totalTooLarge){
+    projectFileInput.value='';
+    projectFileNames.textContent='No files selected';
+    projectFormStatus.textContent=tooMany
+      ?'Please select no more than 5 files.'
+      :tooLarge
+        ?'Each file must be no larger than 8 MB.'
+        :'The selected files must not exceed 20 MB in total.';
+    return;
+  }
+  projectFormStatus.textContent='';
+  projectFileNames.textContent=files.length
+    ?files.map(file=>`${file.name} (${Math.max(1,Math.ceil(file.size/1024))} KB)`).join(' · ')
+    :'No files selected';
+  requestAnimationFrame(()=>projectModalBody?.scrollTo({top:projectFileScrollPosition,behavior:'auto'}));
 });
 
 ndaButton?.addEventListener('click',()=>{
@@ -231,8 +256,24 @@ const syncProjectSubmitState=()=>{
 projectConsent?.addEventListener('change',syncProjectSubmitState);
 syncProjectSubmitState();
 
+const validateProjectEmails=()=>{
+  if(!projectEmail||!projectEmailConfirm)return true;
+  const email=projectEmail.value.trim().toLowerCase();
+  const confirmation=projectEmailConfirm.value.trim().toLowerCase();
+  const mismatch=Boolean(confirmation)&&email!==confirmation;
+  projectEmailConfirm.setCustomValidity(mismatch
+    ?(document.documentElement.lang==='el'?'Οι δύο διευθύνσεις email δεν ταιριάζουν.':'The two email addresses do not match.')
+    :'');
+  return !mismatch;
+};
+
+projectEmail?.addEventListener('input',validateProjectEmails);
+projectEmailConfirm?.addEventListener('input',validateProjectEmails);
+projectEmailConfirm?.addEventListener('blur',validateProjectEmails);
+
 projectForm?.addEventListener('submit',async event=>{
   event.preventDefault();
+  validateProjectEmails();
   if(!projectForm.reportValidity())return;
 
   const submitButton=projectSubmitButton;
@@ -256,10 +297,13 @@ projectForm?.addEventListener('submit',async event=>{
     const result=await response.json().catch(()=>({}));
     if(!response.ok){
       const isGreek=document.documentElement.lang==='el';
+      const uploadError=response.status===413
+        ?(isGreek?'Τα αρχεία είναι μεγαλύτερα από το όριο του server. Επιλέξτε μικρότερα αρχεία.':'The files exceed the server upload limit. Please select smaller files.')
+        :null;
       const failureNotice=result.failureEmailSent
         ?(isGreek?' Σας στείλαμε και σχετική ενημέρωση μέσω email.':' We also sent you a failure notification by email.')
         :'';
-      throw new Error((result.error||'The request could not be processed. Please try again.')+failureNotice);
+      throw new Error((uploadError||result.error||'The request could not be processed. Please try again.')+failureNotice);
     }
 
     const isGreek=document.documentElement.lang==='el';
@@ -310,7 +354,7 @@ const cookieConsentMarkup=`
         <label class="is-unavailable"><span><strong>Analytics</strong><small>Not currently used on this website.</small></span><input type="checkbox" disabled aria-label="Analytics technologies are not currently used"></label>
         <label class="is-unavailable"><span><strong>Marketing</strong><small>Not currently used on this website.</small></span><input type="checkbox" disabled aria-label="Marketing technologies are not currently used"></label>
       </div>
-      <footer><a href="cookies.html">Read Cookie Policy</a><button class="cookie-primary" type="button" data-cookie-save>Save Preferences</button></footer>
+      <footer><a href="cookies">Read Cookie Policy</a><button class="cookie-primary" type="button" data-cookie-save>Save Preferences</button></footer>
     </section>
   </div>
 `;
@@ -375,11 +419,12 @@ if(!currentCookieConsent){
   cookieBanner.hidden=false;
 }
 
+const backToTopTarget=document.querySelector('[data-back-to-top-target]');
 const backToTopButton=document.createElement('button');
 backToTopButton.type='button';
 backToTopButton.className='back-to-top';
-backToTopButton.setAttribute('aria-label','Back to top');
-backToTopButton.setAttribute('title','Back to top');
+backToTopButton.setAttribute('aria-label',backToTopTarget?'Back to profile search':'Back to top');
+backToTopButton.setAttribute('title',backToTopTarget?'Back to profile search':'Back to top');
 backToTopButton.innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 14.5 12 7l7 7.5M12 7v11"/></svg>';
 document.body.append(backToTopButton);
 
@@ -390,7 +435,15 @@ const updateBackToTop=()=>{
   backToTopButton.classList.toggle('is-visible',pageCanScroll&&window.scrollY>Math.max(420,window.innerHeight*.55));
 };
 
-backToTopButton.addEventListener('click',()=>window.scrollTo({top:0,behavior:backToTopReducedMotion.matches?'auto':'smooth'}));
+backToTopButton.addEventListener('click',()=>{
+  const behavior=backToTopReducedMotion.matches?'auto':'smooth';
+  if(backToTopTarget){
+    backToTopTarget.scrollIntoView({behavior,block:'start'});
+    window.setTimeout(()=>backToTopTarget.querySelector('select,input,button')?.focus({preventScroll:true}),behavior==='smooth'?500:0);
+    return;
+  }
+  window.scrollTo({top:0,behavior});
+});
 window.addEventListener('scroll',updateBackToTop,{passive:true});
 window.addEventListener('resize',updateBackToTop);
 window.addEventListener('load',updateBackToTop);

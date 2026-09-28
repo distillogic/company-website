@@ -8,8 +8,8 @@ export const sendSubmissionFailureEmail=async({reference,data,files})=>{
   const greek=data.language==='el';
   const title=greek?'Το αίτημα έργου σας δεν υποβλήθηκε':'Your project enquiry could not be submitted';
   const intro=greek
-    ?'Λάβαμε την προσπάθεια υποβολής, αλλά δεν μπορέσαμε να καταχωρίσουμε το αίτημα στο CRM. Δεν δημιουργήθηκε επιτυχής αίτηση. Δοκιμάστε ξανά αργότερα ή επικοινωνήστε στο info@distillogic.gr.'
-    :'We received your submission attempt, but could not register it in the CRM. No successful application was created. Please try again later or contact info@distillogic.gr.';
+    ?'Λάβαμε την προσπάθεια υποβολής, αλλά δεν μπορέσαμε να καταχωρίσουμε το αίτημα στο CRM. Δεν δημιουργήθηκε επιτυχής αίτηση. Δοκιμάστε ξανά αργότερα ή επικοινωνήστε στο account1@example.invalid.'
+    :'We received your submission attempt, but could not register it in the CRM. No successful application was created. Please try again later or contact account1@example.invalid.';
   const labels=greek
     ?['Κωδικός','Όνομα','Εταιρεία','Email','Τίτλος έργου','Απαιτήσεις','Συνημμένα']
     :['Reference','Name','Company','Email','Project title','Requirements','Attachments'];

@@ -139,6 +139,6 @@ try {
     }
     if (isset($pdo) && $pdo->inTransaction()) $pdo->rollBack();
     error_log('Website enquiry failed: ' . $exception->getMessage());
-    $failureSent = $emailForFailure ? send_crm_email($emailForFailure, 'Αποτυχία υποβολής αιτήματος', '<p>Η αίτησή σας δεν καταχωρίστηκε. Παρακαλούμε δοκιμάστε ξανά ή επικοινωνήστε στο info@distillogic.gr.</p>') : false;
+    $failureSent = $emailForFailure ? send_crm_email($emailForFailure, 'Αποτυχία υποβολής αιτήματος', '<p>Η αίτησή σας δεν καταχωρίστηκε. Παρακαλούμε δοκιμάστε ξανά ή επικοινωνήστε στο account1@example.invalid.</p>') : false;
     api_answer(500, ['ok' => false, 'error' => 'Η αίτηση δεν καταχωρίστηκε. Παρακαλούμε δοκιμάστε ξανά.', 'failureEmailSent' => $failureSent]);
 }

@@ -1,0 +1,29 @@
+.contact-page{padding:140px 0 56px}
+.contact-hero{padding-bottom:28px}
+.contact-hero h1{max-width:850px;font-size:clamp(32px,3.8vw,48px);line-height:1.12;letter-spacing:-.035em;margin:10px 0 16px}
+.contact-intro{max-width:750px;font-size:16px;color:var(--muted)}
+.contact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.contact-card{min-width:0;padding:24px;border:1px solid var(--line);border-radius:20px;background:var(--white);box-shadow:0 10px 30px rgba(7,20,38,.035);font-size:15px;line-height:1.6}
+.contact-card h2{font-size:clamp(20px,1.8vw,24px);line-height:1.25;margin:8px 0 16px}
+.contact-card p{color:var(--muted);margin-bottom:0}
+.contact-card .eyebrow{color:var(--blue);margin:0;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.contact-primary-link{display:inline-block;color:var(--blue);font-size:clamp(20px,1.8vw,24px);font-weight:600;overflow-wrap:anywhere;margin-bottom:8px}
+.contact-phone-list,.contact-hours{margin:0}
+.contact-phone-list>div{display:grid;grid-template-columns:100px minmax(0,1fr);gap:12px;margin:10px 0}
+.contact-phone-list>div:last-child{margin-bottom:0}
+.contact-phone-list dt,.contact-hours dt{color:var(--muted)}
+.contact-phone-list dd,.contact-hours dd{margin:0;font-weight:600}
+.contact-phone-list a{display:block;width:fit-content;font-size:16px;padding:3px 0}
+.contact-card address{font-style:normal;line-height:1.7;overflow-wrap:anywhere}
+.contact-hours>div{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--line)}
+.contact-hours dd{white-space:nowrap}
+.contact-timezone{font-size:13px;margin-top:14px}
+.contact-card a:hover{text-decoration:underline;text-underline-offset:4px}
+.contact-page a:focus-visible,.contact-page button:focus-visible{outline:3px solid var(--blue-2);outline-offset:5px}
+html[data-theme="dark"] .contact-card{background:#0b1d34;border-color:#29435f}
+html[data-theme="dark"] .contact-card h2,html[data-theme="dark"] .contact-hero h1,html[data-theme="dark"] .contact-card address,html[data-theme="dark"] .contact-card dd{color:#f4f7ff}
+html[data-theme="dark"] .contact-card p,html[data-theme="dark"] .contact-card dt,html[data-theme="dark"] .contact-intro{color:#afbed1}
+html[data-theme="dark"] .contact-primary-link{color:#75aaff}
+html[data-theme="dark"] .contact-hours>div{border-color:#29435f}
+@media(max-width:800px){.contact-page{padding-top:195px}.contact-grid{grid-template-columns:1fr}.contact-card{padding:20px}.contact-hero{padding-bottom:22px}}
+@media(max-width:420px){.contact-hours>div{flex-direction:column;gap:3px}.contact-phone-list>div{grid-template-columns:1fr;gap:3px}}

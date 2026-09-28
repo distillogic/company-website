@@ -1,0 +1,43 @@
+# Secrets: examples are safe, actual deployment configuration is server-only.
+**/config.php
+**/*.config.php
+**/.env
+**/.env.*
+!**/.env.example
+!**/config.example.php
+!**/*.config.example.php
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Runtime/private documents and signatures must remain on the server.
+**/storage/
+**/uploads/
+**/logs/
+**/sessions/
+**/backups/
+**/signatures/*
+!**/signatures/.htaccess
+**/private-assets/*
+!**/private-assets/.htaccess
+!crm/private-assets/personnel-templates.json
+*.sql
+*.sqlite
+*.db
+*.log
+*.zip
+*.bak
+*.disabled
+/index-wrong.php
+/index-disable.php
+/index.php
+
+# Local tools/dependencies.
+**/node_modules/
+**/.npm-cache/
+**/tmp/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

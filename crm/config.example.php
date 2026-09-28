@@ -17,10 +17,15 @@ return [
         'setup_token' => 'REPLACE_WITH_A_LONG_RANDOM_SETUP_TOKEN',
         'session_days' => 14,
     ],
+    'company' => [
+        'legal_name' => 'EXAMPLE COMPANY',
+        'address' => 'Example Street 1, Patras, Greece',
+        'vat_number' => 'EL000000000',
+        'gemi_number' => '000000000000',
+    ],
     'mail' => [
-        'from_email' => 'info@distillogic.gr',
+        'from_email' => 'account1@example.invalid',
         'from_name' => 'DISTILLOGIC TECHNOLOGIES',
         'resend_api_key' => '',
     ],
 ];
-

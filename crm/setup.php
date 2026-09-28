@@ -16,9 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$installed) {
     $token = (string)($_POST['setup_token'] ?? '');
     $expected = (string)(crm_config()['app']['setup_token'] ?? '');
     $passwords = [
-        'melas@distillogic.gr' => (string)($_POST['melas_password'] ?? ''),
-        'sophianos@distillogic.gr' => (string)($_POST['sophianos_password'] ?? ''),
-        'support@distillogic.gr' => (string)($_POST['support_password'] ?? ''),
+        'account3@example.invalid' => (string)($_POST['Director_password'] ?? ''),
+        'account2@example.invalid' => (string)($_POST['Manager_password'] ?? ''),
+        'account4@example.invalid' => (string)($_POST['support_password'] ?? ''),
     ];
 
     if ($expected === '' || str_starts_with($expected, 'REPLACE_') || !hash_equals($expected, $token)) {
@@ -35,9 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$installed) {
             // after every CREATE TABLE statement has completed.
             $pdo->beginTransaction();
             $accounts = [
-                ['Melas', 'melas@distillogic.gr', 'admin'],
-                ['Sophianos', 'sophianos@distillogic.gr', 'manager'],
-                ['Support', 'support@distillogic.gr', 'technical'],
+                ['Director', 'account3@example.invalid', 'admin'],
+                ['Manager', 'account2@example.invalid', 'manager'],
+                ['Support', 'account4@example.invalid', 'technical'],
             ];
             $insert = $pdo->prepare(
                 'INSERT INTO users (id, name, email, role, active, password_hash)
@@ -83,8 +83,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$installed) {
     <?php if ($error): ?><div class="alert error"><?= e($error) ?></div><?php endif; ?>
     <form method="post" class="stack">
       <label>Setup token<input type="password" name="setup_token" required autocomplete="off"></label>
-      <label>Κωδικός Melas<input type="password" name="melas_password" required minlength="12" autocomplete="new-password"></label>
-      <label>Κωδικός Sophianos<input type="password" name="sophianos_password" required minlength="12" autocomplete="new-password"></label>
+      <label>Κωδικός Director<input type="password" name="Director_password" required minlength="12" autocomplete="new-password"></label>
+      <label>Κωδικός Manager<input type="password" name="Manager_password" required minlength="12" autocomplete="new-password"></label>
       <label>Κωδικός Support<input type="password" name="support_password" required minlength="12" autocomplete="new-password"></label>
       <button class="button primary" type="submit">Εγκατάσταση CRM</button>
     </form>

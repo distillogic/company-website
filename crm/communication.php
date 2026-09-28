@@ -18,6 +18,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         flash('success', 'Η επικοινωνία αρχειοθετήθηκε.');
         redirect_to('communications.php');
     }
+    if ($action === 'delete') {
+        $statement = db()->prepare('UPDATE communications SET deleted_at = NOW() WHERE id = ? AND deleted_at IS NULL');
+        $statement->execute([$id]);
+        flash('success', 'Η επικοινωνία διαγράφηκε.');
+        redirect_to('communications.php');
+    }
     if ($action === 'update') {
         $interest = ($_POST['interest_level'] ?? '') === '' ? null : max(1, min(5, (int)$_POST['interest_level']));
         $nextAt = trim((string)($_POST['next_action_at'] ?? ''));
@@ -67,7 +73,7 @@ if ($item['reference']) {
 }
 render_header('Προβολή επικοινωνίας', $user);
 ?>
-<div class="page-heading"><div><h1><?= e($item['company_name']) ?></h1><p><?= e($item['contact_name'] ?: 'Χωρίς όνομα επαφής') ?> · <?= $item['source'] === 'website' ? 'Από ιστοσελίδα' : 'Τηλεφωνική επικοινωνία' ?></p></div><div class="actions"><a class="button" href="<?= e(crm_url('communications.php')) ?>">Πίσω</a><form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="archive"><button class="button danger" data-confirm="Να αρχειοθετηθεί η επικοινωνία;">Αρχειοθέτηση</button></form></div></div>
+<div class="page-heading"><div><h1><?= e($item['company_name']) ?></h1><p><?= e($item['contact_name'] ?: 'Χωρίς όνομα επαφής') ?> · <?= $item['source'] === 'website' ? 'Από ιστοσελίδα' : 'Τηλεφωνική επικοινωνία' ?></p></div><div class="actions"><a class="button" href="<?= e(crm_url('communications.php')) ?>">Πίσω</a><form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="archive"><button class="button" data-confirm="Να αρχειοθετηθεί η επικοινωνία;">Αρχειοθέτηση</button></form><form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="delete"><button class="button danger" data-confirm="Να διαγραφεί η επικοινωνία; Θα αφαιρεθεί από όλες τις λίστες.">Διαγραφή</button></form></div></div>
 <section class="grid split">
   <div class="stack">
     <form method="post" class="card form-section"><input type="hidden" name="csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="update">
@@ -94,4 +100,3 @@ render_header('Προβολή επικοινωνίας', $user);
   <aside class="card"><h2>Στοιχεία εταιρείας</h2><dl class="detail-list"><div><dt>Email</dt><dd><?= e($item['company_email'] ?: '—') ?></dd></div><div><dt>Τηλέφωνο</dt><dd><?= e($item['company_phone'] ?: '—') ?></dd></div><div><dt>Καταχώριση από</dt><dd><?= e($item['author_name']) ?></dd></div><div><dt>Ανατέθηκε σε</dt><dd><?= e($item['assigned_name']) ?></dd></div><div><dt>Δημιουργήθηκε</dt><dd><?= e(format_datetime($item['created_at'])) ?></dd></div><div><dt>Ενημερώθηκε</dt><dd><?= e(format_datetime($item['updated_at'])) ?></dd></div></dl></aside>
 </section>
 <?php render_footer(); ?>
-

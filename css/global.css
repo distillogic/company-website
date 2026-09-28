@@ -566,6 +566,7 @@ body.project-modal-open {
 }
 
 .project-file-field {
+  position:relative;
   display:flex;
   align-items:center;
   gap:16px;
@@ -584,11 +585,48 @@ body.project-modal-open {
 }
 
 .project-file-field input {
-  position:absolute;
-  width:1px;
-  height:1px;
-  opacity:0;
-  pointer-events:none
+  position:static;
+  display:block;
+  width:100%;
+  height:auto;
+  margin-top:12px;
+  border:0;
+  padding:0;
+  background:transparent;
+  color:#657286;
+  font-size:12px;
+  opacity:1;
+  cursor:pointer
+}
+
+.project-file-field:focus-within {
+  border-color:#1769ff;
+  background:#edf4ff;
+  box-shadow:0 0 0 4px rgba(23,105,255,.1)
+}
+
+.project-file-field input::file-selector-button {
+  min-height:38px;
+  margin-right:10px;
+  border:1px solid #1769ff;
+  border-radius:9px;
+  background:#1769ff;
+  padding:8px 13px;
+  color:#fff;
+  font:600 12px var(--font-display);
+  cursor:pointer
+}
+
+.project-file-field input::-webkit-file-upload-button {
+  min-height:38px;
+  margin-right:10px;
+  border:1px solid #1769ff;
+  border-radius:9px;
+  background:#1769ff;
+  padding:8px 13px;
+  color:#fff;
+  font:600 12px var(--font-display);
+  cursor:pointer
 }
 
 .project-file-icon {
@@ -618,6 +656,13 @@ body.project-modal-open {
   color:#657286;
   font-size:11px;
   overflow-wrap:anywhere
+}
+
+.project-file-names {
+  display:block;
+  margin-top:8px;
+  color:#30445d;
+  font-weight:600
 }
 
 .project-nda-section {

@@ -1,32 +1,22 @@
-# DISTILLOGIC website backend
+# DISTILLOGIC — Public source edition / Δημόσια έκδοση κώδικα
 
-This service receives the **Discuss a Project** form, validates all fields and uploads, and forwards accepted enquiries to a configured destination.
+**NOT A PRODUCTION DEPLOYMENT PACKAGE. DO NOT DEPLOY THIS BRANCH TO PLESK.**
 
-## Local setup
+This is an intentionally redacted source snapshot derived from the restored website and CRM archive supplied on 2026-09-28. It is not a fully functional installation or a complete backup.
 
-1. Open a terminal in `Distillogic/backend`.
-2. Run `npm install`.
-3. Copy `.env.example` to `.env`.
-4. Keep `ENQUIRY_DESTINATION=mock` during local development.
-5. Run `npm run dev`.
-6. Open `http://localhost:3000`.
+For publication, this edition excludes:
 
-The same Node process serves both the website and `/api/*`, so the browser does not need cross-origin credentials or a public CRM key.
+- Actual database/email configuration, credentials, uploaded files, signatures and stamps.
+- Internal PDFs, commercial/legal/employment documents and associated document text templates.
+- Employee-specific account activation utilities and internal operational instructions.
+- Personnel profile datasets and employment-history/organisation mappings.
 
-## Safety of mock mode
+Real email addresses, legal company details, registration identifiers, postal address and phone numbers are replaced with example values. Access-control identities and approval email destinations therefore require deliberate private configuration before any real use. Document rendering endpoints are disabled placeholders; missing internal assets and employee-specific utilities are intentional.
 
-Mock mode validates the complete request but stores and sends nothing. Production startup deliberately fails while mock mode is selected, preventing a live form from silently discarding genuine enquiries.
+The running website, CRM and database were not changed. Use a separately maintained private production source for deployment. Do not merge this branch into a branch connected to automatic hosting deployment.
 
-## CRM connection
+## Ελληνικά
 
-After the CRM API is documented:
+Η δημόσια έκδοση περιέχει παραδείγματα αντί πραγματικών στοιχείων. Δεν είναι κατάλληλη για εγκατάσταση στον server: τα εσωτερικά έγγραφα και τα προφίλ έχουν αφαιρεθεί, οι διαδρομές παραγωγής εγγράφων έχουν απενεργοποιηθεί και οι διευθύνσεις έγκρισης/δικαιωμάτων είναι εικονικές.
 
-1. Confirm its endpoint, authentication method and field names.
-2. Adapt `src/services/enquiry-destination.js` if its payload differs from the generic multipart webhook.
-3. Set `ENQUIRY_DESTINATION=crm-webhook`.
-4. Set `CRM_WEBHOOK_URL` and `CRM_BEARER_TOKEN` in the server's private `.env` file.
-5. Never commit `.env` or place the token in frontend JavaScript.
-
-## Production deployment
-
-Run the Node service with a process manager or container and place it behind HTTPS. If a reverse proxy is used, route the website and `/api` to this service and set `TRUST_PROXY=true`. Restrict the server firewall, keep Node dependencies patched, configure backups in the CRM, and add malware scanning before enabling enterprise file uploads.
+Το `.gitignore` βοηθά να μη συμπεριληφθούν ιδιωτικά αρχεία σε νέες αλλαγές. Δεν αφαιρεί στοιχεία από παλιότερα commits. Το προϋπάρχον ιστορικό του αποθετηρίου δεν έχει ξαναγραφτεί ή καθαριστεί στο πλαίσιο αυτής της ενημέρωσης.

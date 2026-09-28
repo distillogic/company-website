@@ -1,0 +1,42 @@
+Options -Indexes -MultiViews
+DirectoryIndex index.html index.php
+AddDefaultCharset UTF-8
+
+# Public website only. CRM, backend, assets and PHP routes stay untouched.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Redirect only a browser request, never an internal .html rewrite.
+  RewriteCond %{THE_REQUEST} "\s/+[^?\s]*\.html(?:[?\s])" [NC]
+  RewriteRule ^index\.html$ ./ [R=301,L,NE]
+  RewriteCond %{THE_REQUEST} "\s/+[^?\s]*\.html(?:[?\s])" [NC]
+  RewriteRule ^(services|delivery-models|engineering|industries|company|privacy|terms|cookies|contact)\.html$ $1 [R=301,L,NE]
+  # Avoid relative asset URLs resolving below a page-shaped directory.
+  RewriteRule ^(services|delivery-models|engineering|industries|company|privacy|terms|cookies|contact)/$ $1 [R=301,L,NE]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(services|delivery-models|engineering|industries|company|privacy|terms|cookies|contact)$ $1.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  <FilesMatch "\.(?:png|jpg|jpeg|gif|webp|svg|ico|woff2?)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
+  <FilesMatch "\.(?:css|js)$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "\.(?:html|xml|txt)$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/javascript application/json application/xml image/svg+xml
+</IfModule>
+
+<FilesMatch "^(?:\.env|package(?:-lock)?\.json|docker-compose(?:\.prod)?\.yml|Makefile|README\.md)$">
+  Require all denied
+</FilesMatch>

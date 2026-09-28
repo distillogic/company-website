@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 process.env.RESEND_API_KEY='test-api-key';
-process.env.RESEND_FROM_EMAIL='info@distillogic.gr';
+process.env.RESEND_FROM_EMAIL='account1@example.invalid';
 
 const {sendSubmissionFailureEmail}=await import('../src/services/submission-failure-email.js');
 

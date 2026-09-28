@@ -30,6 +30,14 @@ export const createApp=()=>{
 
   app.get('/api/health',(request,response)=>response.json({ok:true,service:'distillogic-website'}));
   app.use('/api/project-enquiries',projectEnquiries);
+  // Only public pages participate; API, CRM and asset URLs are unchanged.
+  app.use((request,response,next)=>{
+    if(!['GET','HEAD'].includes(request.method))return next();
+    const match=request.path.match(/^\/(index|services|delivery-models|engineering|industries|company|privacy|terms|cookies|contact)(\.html|\/)$/);
+    if(!match)return next();
+    const query=request.originalUrl.includes('?')?request.originalUrl.slice(request.originalUrl.indexOf('?')):'';
+    response.redirect(301,(match[1]==='index'?'/':'/'+match[1])+query);
+  });
   app.use(express.static(config.siteRoot,{extensions:['html'],index:'index.html'}));
 
   app.use((error,request,response,next)=>{

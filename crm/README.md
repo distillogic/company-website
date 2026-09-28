@@ -1,20 +1,22 @@
-# DISTILLOGIC CRM — Plesk edition
+# DISTILLOGIC — Public source edition / Δημόσια έκδοση κώδικα
 
-This is the PHP 8.2 and MariaDB deployment of the internal DISTILLOGIC CRM.
-It is intentionally independent from the archived Node.js/PostgreSQL implementation.
+**NOT A PRODUCTION DEPLOYMENT PACKAGE. DO NOT DEPLOY THIS BRANCH TO PLESK.**
 
-## Server requirements
+This is an intentionally redacted source snapshot derived from the restored website and CRM archive supplied on 2026-09-28. It is not a fully functional installation or a complete backup.
 
-- PHP 8.2+
-- PDO MySQL, mbstring, fileinfo, curl and session extensions
-- MariaDB 10.11+
-- HTTPS before production sign-in
+For publication, this edition excludes:
 
-## Installation
+- Actual database/email configuration, credentials, uploaded files, signatures and stamps.
+- Internal PDFs, commercial/legal/employment documents and associated document text templates.
+- Employee-specific account activation utilities and internal operational instructions.
+- Personnel profile datasets and employment-history/organisation mappings.
 
-1. Copy `config.example.php` to `config.php` on the server only.
-2. Fill the MariaDB password and a long random setup token.
-3. Visit `/crm/setup.php` and create the three initial account passwords.
-4. Sign in at `/crm/`.
+Real email addresses, legal company details, registration identifiers, postal address and phone numbers are replaced with example values. Access-control identities and approval email destinations therefore require deliberate private configuration before any real use. Document rendering endpoints are disabled placeholders; missing internal assets and employee-specific utilities are intentional.
 
-Never commit `config.php`.
+The running website, CRM and database were not changed. Use a separately maintained private production source for deployment. Do not merge this branch into a branch connected to automatic hosting deployment.
+
+## Ελληνικά
+
+Η δημόσια έκδοση περιέχει παραδείγματα αντί πραγματικών στοιχείων. Δεν είναι κατάλληλη για εγκατάσταση στον server: τα εσωτερικά έγγραφα και τα προφίλ έχουν αφαιρεθεί, οι διαδρομές παραγωγής εγγράφων έχουν απενεργοποιηθεί και οι διευθύνσεις έγκρισης/δικαιωμάτων είναι εικονικές.
+
+Το `.gitignore` βοηθά να μη συμπεριληφθούν ιδιωτικά αρχεία σε νέες αλλαγές. Δεν αφαιρεί στοιχεία από παλιότερα commits. Το προϋπάρχον ιστορικό του αποθετηρίου δεν έχει ξαναγραφτεί ή καθαριστεί στο πλαίσιο αυτής της ενημέρωσης.
